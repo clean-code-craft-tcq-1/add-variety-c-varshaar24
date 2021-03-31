@@ -3,6 +3,10 @@
 
 CoolingInfoType CoolingInfo[] = {{PASSIVE_COOLING,0,35} , {HI_ACTIVE_COOLING,0,45} , {MED_ACTIVE_COOLING,0,40}};
 
+void EmailNormal(const char* recepient);
+void EmailHigh(const char* recepient);
+void EmailLow(const char* recepient);
+
 void (*TargetType[])(BreachType) = {sendToController,sendToEmail};
 void (*Email[])(const char*) ={EmailNormal,EmailHigh,EmailLow};
 
@@ -18,7 +22,7 @@ BreachType inferBreach(double value, double lowerLimit, double upperLimit) {
 
 BreachType classifyTemperatureBreach(CoolingType coolingType, double temperatureInC) 
 {
-  return inferBreach(temperatureInC, CoolingInfo[coolingType].lowerLimit, CoolingInfo[coolingType].upperLimit);
+  return inferBreach(temperatureInC, CoolingInfo[coolingType].LowerLimit, CoolingInfo[coolingType].UpperLimit);
 }
 
 void checkAndAlert(AlertTarget alertTarget, BatteryCharacter batteryChar, double temperatureInC) 
@@ -26,7 +30,7 @@ void checkAndAlert(AlertTarget alertTarget, BatteryCharacter batteryChar, double
 
   BreachType breachType = classifyTemperatureBreach(batteryChar.coolingType, temperatureInC);
   
-  (*TargetType[alertTarget])(BreachType);
+  (*TargetType[alertTarget])(breachType);
 }
 
 void sendToController(BreachType breachType) {
@@ -56,6 +60,6 @@ void sendToEmail(BreachType breachType)
 {
   const char* recepient = "a.b@c.com";
   
-  (*Email[breachType])(recepient)
+  (*Email[breachType])(recepient);
   
 }
