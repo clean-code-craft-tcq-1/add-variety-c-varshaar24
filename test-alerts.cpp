@@ -16,3 +16,9 @@ TEST_CASE("check and alert") {
   batteryChar.coolingType = HI_ACTIVE_COOLING;
   checkAndAlert(TO_EMAIL, batteryChar, 50);
 }
+
+TEST_CASE("check and alert2") {
+  BatteryCharacter batteryChar;
+  batteryChar.coolingType = MED_ACTIVE_COOLING;
+  checkAndAlert(TO_CONTROLLER, batteryChar, -1);
+}
