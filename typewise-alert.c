@@ -8,7 +8,7 @@ void EmailHigh(const char* recepient);
 void EmailLow(const char* recepient);
 
 void (*TargetType[])(BreachType) = {sendToController,sendToEmail};
-void (*Email[])(const char*) ={EmailNormal,EmailHigh,EmailLow};
+void (*Email[])(const char*) ={EmailNormal,EmailLow,EmailHigh};
 
 BreachType inferBreach(double value, double lowerLimit, double upperLimit) {
   if(value < lowerLimit) {
