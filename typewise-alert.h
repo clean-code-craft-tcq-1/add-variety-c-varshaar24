@@ -25,6 +25,14 @@ typedef struct {
   char brand[48];
 } BatteryCharacter;
 
+typedef struct
+{
+	CoolingType coolingType;
+	int LowerLimit;
+	int UpperLimit;
+	
+}CoolingInfoType;
+
 void checkAndAlert(
   AlertTarget alertTarget, BatteryCharacter batteryChar, double temperatureInC);
 
