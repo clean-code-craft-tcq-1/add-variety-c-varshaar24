@@ -14,6 +14,5 @@ TEST_CASE("Classify temperature") {
 TEST_CASE("check and alert") {
   BatteryCharacter batteryChar;
   batteryChar.coolingType = HI_ACTIVE_COOLING;
-  batteryChar.brand[2] = "aa";
   checkAndAlert(TO_EMAIL, batteryChar, 50);
 }
