@@ -1,14 +1,15 @@
 #include "typewise-alert.h"
 #include <stdio.h>
 
+unsigned int SentSuccessfullytoController=0;
 CoolingInfoType CoolingInfo[] = {{PASSIVE_COOLING,0,35} , {HI_ACTIVE_COOLING,0,45} , {MED_ACTIVE_COOLING,0,40}};
 
-void EmailNormal(const char* recepient);
-void EmailHigh(const char* recepient);
-void EmailLow(const char* recepient);
+Successtype EmailNormal(const char* recepient);
+Successtype EmailHigh(const char* recepient);
+Successtype EmailLow(const char* recepient);
 
-void (*TargetType[])(BreachType) = {sendToController,sendToEmail};
-void (*Email[])(const char*) ={EmailNormal,EmailLow,EmailHigh};
+Successtype (*TargetType[])(BreachType) = {sendToController,sendToEmail};
+Successtype (*Email[])(const char*) ={EmailNormal,EmailLow,EmailHigh};
 
 BreachType inferBreach(double value, double lowerLimit, double upperLimit) {
   if(value < lowerLimit) {
@@ -25,41 +26,60 @@ BreachType classifyTemperatureBreach(CoolingType coolingType, double temperature
   return inferBreach(temperatureInC, CoolingInfo[coolingType].LowerLimit, CoolingInfo[coolingType].UpperLimit);
 }
 
-void checkAndAlert(AlertTarget alertTarget, BatteryCharacter batteryChar, double temperatureInC) 
+Successtype checkAndAlert(AlertTarget alertTarget, BatteryCharacter batteryChar, double temperatureInC) 
 {
 
   BreachType breachType = classifyTemperatureBreach(batteryChar.coolingType, temperatureInC);
   
-  (*TargetType[alertTarget])(breachType);
+  return ((*TargetType[alertTarget])(breachType));
+}
+void DioWriteToController(const unsigned short header, BreachType breachType)
+{
+	(void)header;
+	(void)breachType;
+    SentSuccessfullytoController = 1;
 }
 
 void sendToController(BreachType breachType) {
   const unsigned short header = 0xfeed;
-  printf("%x : %x\n", header, breachType);
+    SentSuccessfullytoController=0;
+  DioWriteToController( header, breachType );
+  return SentToController;
 }
 
-void EmailNormal(const char* recepient)
+Successtype sendToConsole(BreachType breachType) {
+  printf("the temperature is %x \n", breachType);
+  return SentToConsole;
+}
+
+Successtype EmailNormal(const char* recepient)
 {
     printf("To: %s\n", recepient);
     printf("Hi, the temperature is normal\n");
+	
+	 return SentToEmail_Normal;
 }
 
-void EmailHigh(const char* recepient)
+Successtype EmailHigh(const char* recepient)
 {
     printf("To: %s\n", recepient);
     printf("Hi, the temperature too High\n");
+	
+	return SentToEmail_TooHigh;
 }
 
-void EmailLow(const char* recepient)
+Successtype EmailLow(const char* recepient)
 {
     printf("To: %s\n", recepient);
     printf("Hi, the temperature too Low\n");
+	
+	return SentToEmail_TooLow;
 }
 
-void sendToEmail(BreachType breachType) 
+Successtype sendToEmail(BreachType breachType) 
 {
   const char* recepient = "a.b@c.com";
   
-  (*Email[breachType])(recepient);
+  return (*Email[breachType])(recepient);
   
 }
