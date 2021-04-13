@@ -40,7 +40,7 @@ void DioWriteToController(const unsigned short header, BreachType breachType)
     SentSuccessfullytoController = 1;
 }
 
-void sendToController(BreachType breachType) {
+Successtype sendToController(BreachType breachType) {
   const unsigned short header = 0xfeed;
     SentSuccessfullytoController=0;
   DioWriteToController( header, breachType );
