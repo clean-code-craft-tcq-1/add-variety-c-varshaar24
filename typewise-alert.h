@@ -1,5 +1,6 @@
 #pragma once
 
+
 typedef enum {
   PASSIVE_COOLING,
   HI_ACTIVE_COOLING,
@@ -17,8 +18,17 @@ BreachType classifyTemperatureBreach(CoolingType coolingType, double temperature
 
 typedef enum {
   TO_CONTROLLER,
-  TO_EMAIL
+  TO_EMAIL,
+  TO_CONSOLE
 } AlertTarget;
+
+typedef enum {
+	SentToController,
+	SentToEmail_Normal,
+	SentToEmail_TooLow,
+	SentToEmail_TooHigh,
+	SentToConsole
+} Successtype;
 
 typedef struct {
   CoolingType coolingType;
@@ -33,8 +43,10 @@ typedef struct
 	
 }CoolingInfoType;
 
-void checkAndAlert(
-  AlertTarget alertTarget, BatteryCharacter batteryChar, double temperatureInC);
+Successtype checkAndAlert(AlertTarget alertTarget, BatteryCharacter batteryChar, double temperatureInC);
 
-void sendToController(BreachType breachType);
-void sendToEmail(BreachType breachType);
+Successtype sendToController(BreachType breachType);
+Successtype sendToEmail(BreachType breachType);
+Successtype sendToConsole(BreachType breachType);
+
+void DioWriteToController(const unsigned short header, BreachType breachType);
